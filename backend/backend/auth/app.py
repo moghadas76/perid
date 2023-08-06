@@ -42,6 +42,9 @@ async def create_user(data: UserAuth, db: Session = Depends(db_connection)):
             detail="User with this email already exist"
         )
     db_user = models.User(email=data.email, hashed_password=get_hashed_password(data.password), id=str(uuid4()))
+    db_group = models.Group(name="lawyers")
+    db_user.groups.append(db_group)
+    db.add(db_group)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -62,10 +65,15 @@ async def login(form_data: OAuthEmail2PasswordRequestForm = Depends(), db: Sessi
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect email or password"
         )
-    
+    role=""
+    try:
+         role = user.groups[0].name
+    except:
+         role = "user"
     return {
         "access_token": create_access_token(user.email),
         "refresh_token": create_refresh_token(user.email),
+        "role": role
     }
 
 @app.get('/me', summary='Get details of currently logged in user', response_model=UserOut)

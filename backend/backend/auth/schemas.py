@@ -40,6 +40,7 @@ from pydantic import BaseModel, Field, model_validator
 class TokenSchema(BaseModel):
     access_token: str
     refresh_token: str
+    role: str
     
     
 class TokenPayload(BaseModel):
