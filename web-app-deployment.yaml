@@ -1,0 +1,141 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataprocessingservice
+spec:
+  selector:
+    matchLabels:
+      run: dataprocessingservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: dataprocessingservice
+    spec:
+      containers:
+      - name: dataprocessingservice
+        image: docker.io/datawire/dataprocessingservice:golang
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataprocessingservice
+  labels:
+    run: dataprocessingservice
+  annotations:
+    a8r.io/description: "Data processing adapter"
+    a8r.io/owner: "@peteroneilljr"
+    a8r.io/chat: "#ambassador"
+    a8r.io/bugs: "https://github.com/datawire/edgey-corp-go/issues"
+    a8r.io/documentation: "https://github.com/datawire/edgey-corp-go/blob/master/README.md"
+    a8r.io/repository: "https://github.com/datawire/edgey-corp-go"
+    a8r.io/support: "http://d6e.co/slack"
+    a8r.io/runbook: "https://github.com/datawire/edgey-corp-go/blob/master/README.md"
+    a8r.io/incidents: "https://github.com/datawire/edgey-corp-go/issues"
+    a8r.io/dependencies: "verylargedatastore.default"
+    a8r.io/uptime: "https://github.com/datawire/edgey-corp-go/issues"
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+  selector:
+    run: dataprocessingservice
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verylargejavaservice
+spec:
+  selector:
+    matchLabels:
+      run: verylargejavaservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: verylargejavaservice
+    spec:
+      containers:
+      - name: verylargejavaservice
+        image: docker.io/datawire/verylargejavaservice
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verylargejavaservice
+  labels:
+    run: verylargejavaservice
+  annotations:
+    a8r.io/description: "Web content-generating frontend app"
+    a8r.io/owner: "@danielbryantuk"
+    a8r.io/chat: "#ambassador"
+    a8r.io/bugs: "https://github.com/datawire/edgey-corp-go/issues"
+    a8r.io/documentation: "https://github.com/datawire/edgey-corp-go/blob/master/README.md"
+    a8r.io/repository: "https://github.com/datawire/edgey-corp-go"
+    a8r.io/support: "http://d6e.co/slack"
+    a8r.io/runbook: "https://github.com/datawire/edgey-corp-go/blob/master/README.md"
+    a8r.io/incidents: "https://github.com/datawire/edgey-corp-go/issues"
+    a8r.io/dependencies: "dataprocessingservice.default"
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    run: verylargejavaservice
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verylargedatastore
+spec:
+  selector:
+    matchLabels:
+      run: verylargedatastore
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: verylargedatastore
+    spec:
+      containers:
+      - name: verylargejavaservice
+        image: docker.io/datawire/verylargedatastore
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verylargedatastore
+  labels:
+    run: verylargedatastore
+  annotations:
+    a8r.io/description: "System of record for all Edgey Corp data"
+    a8r.io/owner: "@danielbryantuk"
+    a8r.io/chat: "#ambassador"
+    a8r.io/bugs: "https://github.com/datawire/edgey-corp-go/issues"
+    a8r.io/documentation: "https://github.com/datawire/edgey-corp-go/blob/master/README.md"
+    a8r.io/repository: "https://github.com/datawire/edgey-corp-go"
+    a8r.io/support: "http://d6e.co/slack"
+    a8r.io/runbook: "https://github.com/datawire/edgey-corp-go/blob/master/README.md"
+    a8r.io/incidents: "https://github.com/datawire/edgey-corp-go/issues"
+    a8r.io/dependencies: ""
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    run: verylargedatastore
